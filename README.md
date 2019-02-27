@@ -1,2 +1,2 @@
 # MyShiro
-spring+springmvc+mybatis+shiro
+spring+springmvc+mybatis+shiro+redis
