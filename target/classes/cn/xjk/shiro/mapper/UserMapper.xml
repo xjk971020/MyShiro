@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xjk.shiro.mapper.UserMapper">
+    <!-- 查询所有用户 -->
+    <select id="selectAllUser" resultType="cn.xjk.shiro.entity.User">
+        select * from sys_users;
+    </select>
+    <!-- 根据用户名查询用户 -->
+    <select id="selectUserByName" parameterType="java.lang.String" resultType="cn.xjk.shiro.entity.User">
+        select * from sys_users where username = #{userName}
+    </select>
+    <!-- 根据用户名id查询该用户拥有的角色 -->
+    <select id="selectRoleByUserId" parameterType="java.lang.Long" resultType="cn.xjk.shiro.entity.Role">
+        select r.id, r.role, r.description
+        from sys_users u, sys_roles r, sys_users_roles ur
+        where u.id = #{userId}
+        and u.id = ur.user_id
+        and r.id = ur.role_id
+    </select>
+    <!-- 根据用户名查询该用户拥有的角色 -->
+    <select id="selectRoleByUserName" parameterType="java.lang.String" resultType="cn.xjk.shiro.entity.Role">
+        select r.id, r.role, r.description
+        from sys_users u, sys_roles r, sys_users_roles ur
+        where u.username = #{userName}
+          and u.id = ur.user_id
+          and r.id = ur.role_id
+    </select>
+    <!-- 根据用户名查询该用户拥有的权限 -->
+    <select id="selectPermissionsByUserName" parameterType="java.lang.String" resultType="cn.xjk.shiro.entity.Permission">
+        select p.id, p.description, p.permission
+        from sys_users_roles ur, sys_roles_permissions rp, sys_permissions p, sys_users u
+        where u.username = #{userName}
+        and u.id = ur.user_id
+        and rp.role_id = ur.role_id
+        and rp.permission_id = p.id
+    </select>
+    <!-- 修改用户信息 -->
+    <update id="updateUser" parameterType="cn.xjk.shiro.entity.User">
+        update sys_users
+        <set>
+            <if test="userName != null">
+                username = #{userName},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="salt != null">
+                salt = #{salt},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId},
+            </if>
+            <if test="locked != null ">
+                locked = #{locked},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <!-- 添加用户 -->
+    <insert id="createUser" parameterType="cn.xjk.shiro.entity.User">
+        insert into sys_users(username,password,salt,locked)
+        values (#{userName},#{password},#{salt},#{locked})
+    </insert>
+    <!-- 删除用户 -->
+    <delete id="deleteUser" parameterType="java.lang.Long">
+        delete from sys_users where id = #{id}
+    </delete>
+    <!-- 关联user和role -->
+    <insert id="correlationUserAndRoles" parameterType="java.lang.Long">
+        insert into sys_users_roles(user_id, role_id)
+        values (#{userId},#{roleId})
+    </insert>
+    <!-- 删除user对应的所有role -->
+    <delete id="deleteAllUserRolesByUserId" parameterType="java.lang.Long">
+        delete from sys_users_roles where user_id = #{userId}
+    </delete>
+</mapper>

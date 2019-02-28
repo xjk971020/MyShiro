@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xjk.shiro.mapper.PermissionMapper">
+    <!-- 查询所有权限 -->
+    <select id="selectAllPermissions" resultType="cn.xjk.shiro.entity.Permission">
+        select * from sys_permissions;
+    </select>
+
+    <!-- 根据权限描述查找权限 -->
+    <select id="selectPermissionByDescription" parameterType="java.lang.String" resultType="java.lang.Long">
+        select id from sys_permissions where description = #{description}
+    </select>
+
+    <!-- 根据权限id查找权限拥有的角色 -->
+    <select id="selectRolesByPermissionId" parameterType="java.lang.Long" resultType="cn.xjk.shiro.entity.Role">
+        select r.id,r.pid,r.description,r.role from sys_roles_permissions rp, sys_roles r
+        where rp.permission_id = #{permissionId}
+        and rp.role_id = r.id
+    </select>
+    <!-- 创建权限 -->
+    <insert id="createPermission" parameterType="cn.xjk.shiro.entity.Permission">
+        insert into sys_permissions
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="permission != null">
+                permission,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="available != null">
+                available,
+            </if>
+            <if test="rid != null">
+                rid
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="permission != null">
+                #{permission},
+            </if>
+            <if test="description != null">
+                #{description},
+            </if>
+            <if test="available != null">
+                #{available},
+            </if>
+            <if test="rid != null">
+                #{rid}
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 删除权限 -->
+    <delete id="deletePermission" parameterType="java.lang.Long">
+        delete from sys_permissions
+        where id = #{id}
+    </delete>
+
+    <!-- 更新权限 -->
+    <update id="updatePermission" parameterType="cn.xjk.shiro.entity.Permission">
+        update sys_permissions
+        <set>
+            <if test="permission != null">
+                permission = #{permission},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="available != null">
+                available = #{available},
+            </if>
+            <if test="rid != null">
+                rid =#{rid}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 关联权限和角色 -->
+    <insert id="correlationRoleAndPermission" parameterType="java.lang.Long">
+        insert into sys_roles_permissions(role_id, permission_id)
+        VALUES(#{roleId},#{permissionId})
+    </insert>
+
+    <!-- 根据权限id删除与该权限关联的角色 -->
+    <delete id="deleteRoleByPermissionId" parameterType="java.lang.Long">
+        delete from sys_roles_permissions
+        where permission_id = #{permissionId}
+    </delete>
+</mapper>
