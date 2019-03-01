@@ -7,4 +7,4 @@
 数据库: mysql 8.0.11  
 缓存数据库: CentOS环境的redis  
   
-#### 运行环境: intellij idea, Tomcat7, Maven, CenOS 5.0, linux环境的redis  
+#### 运行环境: intellij idea, Tomcat7, Maven, CenOS 5.5, linux环境的redis  
