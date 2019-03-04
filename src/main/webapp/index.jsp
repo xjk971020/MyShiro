@@ -69,7 +69,7 @@
         <h2>spring + spirngMVC + Mybatis + shiro 整合案例</h2>
         <br/>
         <!-- 连接到GitHub -->
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+        <p><a class="btn btn-primary btn-lg" href="https://github.com/xjk971020/MyShiro" role="button">Learn more</a></p>
     </div>
 </div>
 
